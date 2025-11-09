@@ -1,0 +1,11 @@
+{
+  "projectId": "my-project",
+  "teamId": "my-team",
+  "orgId": "my-org",
+  "account": "my-account",
+  "scripts": {
+    "build": "npx convex build",
+    "deploy": "npx convex deploy",
+    "dev": "npx convex dev"
+  }
+}

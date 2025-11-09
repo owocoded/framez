@@ -1,0 +1,41 @@
+
+.env.local
+# Node modules
+node_modules/
+
+# Expo
+.expo/
+.expo-shared/
+web-build/
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build outputs
+android/app/build/
+ios/build/
+*.keystore
+
+# Env files
+.env
+.env.local
+.env.*.local
+
+# JetBrains / VSCode
+.idea/
+.vscode/
+
+# Convex generated files (optional)
+convex/_generated/
+
+# Other caches
+*.tmp
+*.temp
