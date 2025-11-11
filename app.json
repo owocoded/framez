@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "framez",
+    "slug": "framez",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "android": {
+      "package": "com.owocoded.myapp"
+    },
+    "ios": {
+      "bundleIdentifier": "com.owocoded.myapp"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "8e3f0ee2-aca4-4ca7-8c1e-a923178ac256"
+      }
+    }
+  },
+  "platforms": [
+    "ios",
+    "android",
+    "web"
+  ],
+  "plugins": [
+    "expo-secure-store"
+  ],
+  "experiments": {
+    "typedRoutes": true
+  },
+  "extra": {
+    "eas": {
+      "projectId": "8e3f0ee2-aca4-4ca7-8c1e-a923178ac256"
+    }
+  },
+  "android": {
+    "package": "com.owocoded.framez"
+  }
+}

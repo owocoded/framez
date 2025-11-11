@@ -1,25 +1,11 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { useAuth } from '@clerk/clerk-expo';
-import { SignIn, SignUp } from '@clerk/clerk-expo';
 
 const AuthScreen = () => {
-  const { isSignedIn } = useAuth();
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Welcome to Me2U</Text>
-      <View style={styles.authContainer}>
-        {isSignedIn ? (
-          <Text>You are already signed in!</Text>
-        ) : (
-          <SignIn 
-            path="/sign-in" 
-            routing="path" 
-            signUpUrl="/sign-up"
-          />
-        )}
-      </View>
+      <Text style={styles.subtitle}>Please sign in or sign up</Text>
     </View>
   );
 };
@@ -36,9 +22,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
-  authContainer: {
-    width: '100%',
-    maxWidth: 400,
+  subtitle: {
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
 

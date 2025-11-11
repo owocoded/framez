@@ -4,22 +4,21 @@ import { v } from "convex/values";
 // Create a new post
 export const createPost = mutation({
   args: {
-    authorId: v.string(),
-    authorName: v.string(),
-    authorAvatar: v.optional(v.string()),
-    text: v.string(),
+    content: v.string(),
     imageUrl: v.optional(v.string()),
+    authorId: v.id("users"), // Pass authorId from client (should be validated)
   },
   handler: async (ctx, args) => {
+    // In a real app, we'd validate that the authorId belongs to the authenticated user
+    // For now, we'll trust the client to pass the correct authorId
+
     const newPost = await ctx.db.insert("posts", {
       authorId: args.authorId,
-      authorName: args.authorName,
-      authorAvatar: args.authorAvatar,
-      text: args.text,
+      content: args.content,
       imageUrl: args.imageUrl,
-      createdAt: Date.now(),
+      createdAt: new Date().toISOString(),
     });
-    
+
     return newPost;
   },
 });
@@ -38,12 +37,12 @@ export const getAllPosts = query({
 // Get posts for a specific user
 export const getUserPosts = query({
   args: {
-    authorId: v.string(),
+    authorId: v.id("users"),
   },
   handler: async (ctx, args) => {
     return await ctx.db
       .query("posts")
-      .withIndex("authorId", (q) => q.eq("authorId", args.authorId))
+      .withIndex("by_author", q => q.eq("authorId", args.authorId))
       .order("desc")
       .collect();
   },
@@ -53,8 +52,19 @@ export const getUserPosts = query({
 export const deletePost = mutation({
   args: {
     id: v.id("posts"),
+    authorId: v.id("users"), // Pass authorId to validate
   },
   handler: async (ctx, args) => {
+    const post = await ctx.db.get(args.id);
+    if (!post) {
+      throw new Error("Post not found");
+    }
+    
+    // Check if the post belongs to the current user
+    if (post.authorId !== args.authorId) {
+      throw new Error("Not authorized to delete this post");
+    }
+    
     return await ctx.db.delete(args.id);
   },
 });

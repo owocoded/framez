@@ -1,6 +1,6 @@
-# Me2U - Social Media App
+# Framez - Social Media App
 
-Me2U is a mobile social app where users can register, log in, and log out securely. Users can create posts with text and optional image uploads, view a feed of all posts (sorted by newest first), and view their own profile with their posts.
+Framez is a mobile social app where users can register, log in, and log out securely. Users can create posts with text and optional image uploads, view a feed of all posts (sorted by newest first), and view their own profile with their posts.
 
 ## 🚀 Tech Stack
 
@@ -48,8 +48,8 @@ Me2U is a mobile social app where users can register, log in, and log out secure
 ### Installation
 1. Clone the repository
 ```bash
-git clone https://github.com/yourusername/Me2U.git
-cd Me2U
+git clone https://github.com/owocoded/framez.git
+cd framez
 ```
 
 2. Install dependencies
@@ -95,7 +95,7 @@ npx expo start --ios
 ## 🏗️ Project Structure
 
 ```
-/Me2U
+/framez
 /src
 /components
   PostCard.tsx

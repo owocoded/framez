@@ -2,15 +2,16 @@ import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import moment from 'moment';
 import Avatar from './Avatar';
+import { useQuery } from 'convex/react';
+import { api } from '../../convex/_generated/api';
+import { Id } from '../../convex/_generated/dataModel';
 
 interface Post {
-  _id: string;
-  authorId: string;
-  authorName: string;
-  authorAvatar?: string;
-  text: string;
+  _id: Id<"posts">;
+  authorId: Id<"users">;
+  content: string;
   imageUrl?: string;
-  createdAt: number;
+  createdAt: string; // ISO string
 }
 
 interface PostCardProps {
@@ -18,12 +19,15 @@ interface PostCardProps {
 }
 
 const PostCard = ({ post }: PostCardProps) => {
+  // Get author info using the authorId
+  const author = useQuery(api.users.getUserById, { id: post.authorId });
+
   return (
     <View style={styles.card}>
       <View style={styles.header}>
-        <Avatar uri={post.authorAvatar} name={post.authorName} size={40} />
+        <Avatar uri={author?.avatar} name={author?.name || ''} size={40} />
         <View style={styles.userInfo}>
-          <Text style={styles.userName}>{post.authorName}</Text>
+          <Text style={styles.userName}>{author?.name}</Text>
           <Text style={styles.timestamp}>
             {moment(post.createdAt).fromNow()}
           </Text>
@@ -33,7 +37,7 @@ const PostCard = ({ post }: PostCardProps) => {
         </TouchableOpacity>
       </View>
       
-      <Text style={styles.postText}>{post.text}</Text>
+      <Text style={styles.postText}>{post.content}</Text>
       
       {post.imageUrl && (
         <Image source={{ uri: post.imageUrl }} style={styles.postImage} />

@@ -33,9 +33,9 @@ ios/build/
 .idea/
 .vscode/
 
-# Convex generated files (optional)
-convex/_generated/
+
 
 # Other caches
 *.tmp
 *.temp
+
