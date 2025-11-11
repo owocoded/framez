@@ -4,8 +4,7 @@ import { useMutation } from 'convex/react';
 import { api } from '../../convex/_generated/api.js';
 import { useConvex } from 'convex/react';
 import * as ImagePicker from 'expo-image-picker';
-import { useAuth } from '@clerk/clerk-expo';
-import { useAuthContext } from '../context/AuthContext';
+import { useConvexAuthContext } from '../context/AuthContext';
 import Avatar from '../components/Avatar';
 
 const CreatePostScreen = () => {
@@ -14,9 +13,8 @@ const CreatePostScreen = () => {
   const [uploading, setUploading] = useState(false);
   const createPost = useMutation(api.posts.createPost);
   const convex = useConvex();
-  const { user: convexUser } = useAuthContext();
-  const clerkUser = useAuth();
-  
+  const { user: convexUser } = useConvexAuthContext();
+
   const pickImage = async () => {
     // Request permission to access media library
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -92,11 +90,11 @@ const CreatePostScreen = () => {
       return;
     }
     
-    if (!convexUser) {
+    if (!convexUser || !convexUser._id) {
       Alert.alert('Error', 'User not found');
       return;
     }
-
+    
     setUploading(true);
     try {
       let imageUrl = undefined;
@@ -105,11 +103,9 @@ const CreatePostScreen = () => {
       }
 
       await createPost({
-        authorId: convexUser._id,
-        authorName: convexUser.name,
-        authorAvatar: convexUser.avatar,
-        text,
+        content: text,
         imageUrl,
+        authorId: convexUser._id,
       });
 
       // Reset form
@@ -129,12 +125,12 @@ const CreatePostScreen = () => {
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 20 }}>
       <View style={styles.header}>
         <Avatar 
-          uri={clerkUser?.imageUrl} 
-          name={clerkUser?.fullName || clerkUser?.primaryEmailAddress?.emailAddress || ''} 
+          uri={convexUser?.avatar} 
+          name={convexUser?.name || convexUser?.email || ''} 
           size={40} 
         />
         <Text style={styles.headerText}>
-          {clerkUser?.fullName || clerkUser?.primaryEmailAddress?.emailAddress}
+          {convexUser?.name || convexUser?.email}
         </Text>
       </View>
       

@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import { SignIn, SignUp } from '@clerk/clerk-expo';
+import SignInScreen from '../screens/SignInScreen';
+import SignUpScreen from '../screens/SignUpScreen';
 
 const Stack = createStackNavigator();
 
@@ -9,7 +10,7 @@ const AuthNavigator = () => {
     <Stack.Navigator>
       <Stack.Screen 
         name="SignIn" 
-        component={SignIn} 
+        component={SignInScreen} 
         options={{
           headerShown: true,
           title: 'Sign In',
@@ -17,7 +18,7 @@ const AuthNavigator = () => {
       />
       <Stack.Screen 
         name="SignUp" 
-        component={SignUp} 
+        component={SignUpScreen} 
         options={{
           headerShown: true,
           title: 'Sign Up',

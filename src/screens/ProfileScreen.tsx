@@ -1,28 +1,34 @@
 import React from 'react';
-import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useQuery } from 'convex/react';
 import { api } from '../../convex/_generated/api.js';
-import { useAuth } from '@clerk/clerk-expo';
 import PostCard from '../components/PostCard';
 import Avatar from '../components/Avatar';
-import { useAuthContext } from '../context/AuthContext';
+import { useConvexAuthContext } from '../context/AuthContext';
 
 const ProfileScreen = () => {
-  const { signOut } = useAuth();
-  const clerkUser = useAuth();
-  const { user: convexUser, isLoading } = useAuthContext();
+  const { signOut, user: convexUser, isLoading } = useConvexAuthContext();
   
   const userPosts = useQuery(api.posts.getUserPosts, {
     authorId: convexUser?._id || "",
   }) || [];
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
     Alert.alert(
       'Sign Out',
       'Are you sure you want to sign out?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Sign Out', onPress: () => signOut() }
+        { 
+          text: 'Sign Out', 
+          onPress: async () => {
+            try {
+              await signOut();
+            } catch (error) {
+              console.error('Sign out error:', error);
+            }
+          }
+        }
       ]
     );
   };
@@ -43,16 +49,16 @@ const ProfileScreen = () => {
     <View style={styles.container}>
       <View style={styles.profileHeader}>
         <Avatar 
-          uri={clerkUser.user?.imageUrl || undefined} 
-          name={clerkUser.user?.fullName || clerkUser.user?.primaryEmailAddress?.emailAddress || ''} 
+          uri={convexUser?.avatar || undefined} 
+          name={convexUser?.name || convexUser?.email || ''} 
           size={80} 
         />
         <View style={styles.userDetails}>
           <Text style={styles.userName}>
-            {clerkUser.user?.fullName || clerkUser.user?.primaryEmailAddress?.emailAddress}
+            {convexUser?.name || convexUser?.email}
           </Text>
           <Text style={styles.userEmail}>
-            {clerkUser.user?.primaryEmailAddress?.emailAddress}
+            {convexUser?.email}
           </Text>
         </View>
       </View>
