@@ -68,3 +68,34 @@ export const deletePost = mutation({
     return await ctx.db.delete(args.id);
   },
 });
+
+// Toggle like on a post
+export const toggleLike = mutation({
+  args: {
+    postId: v.id("posts"),
+    userId: v.id("users"),
+  },
+  handler: async (ctx, args) => {
+    const post = await ctx.db.get(args.postId);
+    if (!post) {
+      throw new Error("Post not found");
+    }
+
+    const likes = post.likes || [];
+    const userLiked = likes.includes(args.userId);
+    
+    if (userLiked) {
+      // Remove user from likes array
+      const updatedLikes = likes.filter(id => id !== args.userId);
+      return await ctx.db.patch(args.postId, {
+        likes: updatedLikes
+      });
+    } else {
+      // Add user to likes array
+      const updatedLikes = [...likes, args.userId];
+      return await ctx.db.patch(args.postId, {
+        likes: updatedLikes
+      });
+    }
+  },
+});

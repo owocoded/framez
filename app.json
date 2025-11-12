@@ -5,6 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
+    "icon": "./assets/IconMobile.png",
     "platforms": [
       "ios",
       "android",
@@ -22,10 +23,19 @@
       }
     },
     "android": {
-      "package": "com.owocoded.framez"
+      "package": "com.owocoded.framez",
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/IconMobile.png",
+        "backgroundColor": "#FFFFFF"
+      },
+      "icon": "./assets/IconMobile.png"
     },
     "ios": {
-      "bundleIdentifier": "com.owocoded.myapp"
+      "bundleIdentifier": "com.owocoded.myapp",
+      "icon": "./assets/IconMobile.png"
+    },
+    "web": {
+      "favicon": "./assets/Favicon.png"
     }
   }
 }

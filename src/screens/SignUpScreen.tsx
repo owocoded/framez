@@ -5,7 +5,6 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   ActivityIndicator,
 } from 'react-native';
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -30,14 +29,22 @@ const SignUpScreen: React.FC<Props> = ({ navigation }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSignUp = async () => {
-    if (!name || !email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+    if (!name || !email || !password || !confirmPassword) {
+      setError('Please fill in all fields');
       return;
     }
 
+    if (password !== confirmPassword) {
+      setError('check password');
+      return;
+    }
+
+    setError(''); // Clear any previous errors
     setIsLoading(true);
     try {
       const success = await signUp(name, email, password);
@@ -45,14 +52,14 @@ const SignUpScreen: React.FC<Props> = ({ navigation }) => {
         // Navigation to main app will be handled by RootNavigator based on auth state
         console.log("Sign up successful");
       } else {
-        Alert.alert('Error', 'Failed to create account');
+        setError('Failed to create account');
       }
     } catch (error: any) {
       console.error('Sign up error:', error);
       if (error.message && error.message.includes('User already exists')) {
-        Alert.alert('Sign Up Failed', 'A user with this email already exists. Please try logging in instead.');
+        setError('A user with this email already exists. Please try logging in instead.');
       } else {
-        Alert.alert('Error', error.message || 'Sign up failed');
+        setError(error.message || 'Sign up failed');
       }
     } finally {
       setIsLoading(false);
@@ -61,15 +68,16 @@ const SignUpScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.appTitle}>Framez</Text>
       <Text style={styles.title}>Sign Up</Text>
-      
+
       <TextInput
         style={styles.input}
         placeholder="Full Name"
         value={name}
         onChangeText={setName}
       />
-      
+
       <TextInput
         style={styles.input}
         placeholder="Email"
@@ -78,7 +86,7 @@ const SignUpScreen: React.FC<Props> = ({ navigation }) => {
         keyboardType="email-address"
         autoCapitalize="none"
       />
-      
+
       <TextInput
         style={styles.input}
         placeholder="Password"
@@ -86,9 +94,20 @@ const SignUpScreen: React.FC<Props> = ({ navigation }) => {
         onChangeText={setPassword}
         secureTextEntry
       />
-      
-      <TouchableOpacity 
-        style={styles.button} 
+
+      <TextInput
+        style={styles.input}
+        placeholder="Confirm Password"
+        value={confirmPassword}
+        onChangeText={setConfirmPassword}
+        secureTextEntry
+      />
+
+      {/* Error message display */}
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+      <TouchableOpacity
+        style={styles.button}
         onPress={handleSignUp}
         disabled={isLoading}
       >
@@ -98,8 +117,8 @@ const SignUpScreen: React.FC<Props> = ({ navigation }) => {
           <Text style={styles.buttonText}>Sign Up</Text>
         )}
       </TouchableOpacity>
-      
-      <TouchableOpacity 
+
+      <TouchableOpacity
         onPress={() => navigation.navigate('SignIn')}
         style={styles.linkButton}
       >
@@ -114,24 +133,40 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     padding: 20,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#121212', // Dark background
+  },
+  appTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+    position: 'absolute',
+    top: 50, // Position at top
+    left: 20, // Position at left
+    zIndex: 1, // Ensure it's above other elements
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 40,
-    color: '#333',
+    color: '#fff', // White text for visibility against dark background
   },
   input: {
     height: 55,
-    borderColor: '#ddd',
+    borderColor: '#555',
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 15,
     marginBottom: 15,
-    backgroundColor: '#fff',
+    backgroundColor: '#333', // Darker input background
     fontSize: 16,
+    color: '#fff', // White text in inputs
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 15,
   },
   button: {
     backgroundColor: '#4A90E2',

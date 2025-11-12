@@ -9,7 +9,7 @@
       "distribution": "internal",
       "env": {
         "EXPO_PUBLIC_CONVEX_URL": "https://focused-heron-145.convex.cloud",
-        "CONVEX_DEPLOYMENT": "prod:focused-heron-145|eyJ2MiI6ImU1OTk2ZDY1NzI4YjRlODM4MDMyMDNiOTY0ZGMwNWM0In0=",
+        "CONVEX_DEPLOYMENT": "prod:focused-heron-145",
         "EXPO_PUBLIC_CONVEX_PROJECT": "framez-dccdd",
         "EXPO_PUBLIC_CONVEX_TEAM": "yusuf-babatunde"
       }
@@ -21,7 +21,7 @@
       },
       "env": {
         "EXPO_PUBLIC_CONVEX_URL": "https://focused-heron-145.convex.cloud",
-        "CONVEX_DEPLOYMENT": "prod:focused-heron-145|eyJ2MiI6ImU1OTk2ZDY1NzI4YjRlODM4MDMyMDNiOTY0ZGMwNWM0In0=",
+        "CONVEX_DEPLOYMENT": "prod:focused-heron-145",
         "EXPO_PUBLIC_CONVEX_PROJECT": "framez-dccdd",
         "EXPO_PUBLIC_CONVEX_TEAM": "yusuf-babatunde"
       }
@@ -33,7 +33,7 @@
       },
       "env": {
         "EXPO_PUBLIC_CONVEX_URL": "https://focused-heron-145.convex.cloud",
-        "CONVEX_DEPLOYMENT": "prod:focused-heron-145|eyJ2MiI6ImU1OTk2ZDY1NzI4YjRlODM4MDMyMDNiOTY0ZGMwNWM0In0=",
+        "CONVEX_DEPLOYMENT": "prod:focused-heron-145=",
         "EXPO_PUBLIC_CONVEX_PROJECT": "framez-dccdd",
         "EXPO_PUBLIC_CONVEX_TEAM": "yusuf-babatunde"
       }

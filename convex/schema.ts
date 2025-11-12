@@ -13,5 +13,6 @@ export default defineSchema({
     content: v.string(),
     imageUrl: v.optional(v.string()),
     createdAt: v.string(), // ISO string for date
+    likes: v.optional(v.array(v.id("users"))), // Array of user IDs who liked the post
   }).index("by_author", ["authorId"]).index("by_created_at", ["createdAt"]),
 });

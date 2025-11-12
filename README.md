@@ -40,25 +40,30 @@ Framez is a mobile social app where users can register, log in, and log out secu
 ## 📦 Setup Instructions
 
 ### Prerequisites
+
 - Node.js (v16 or higher)
 - Expo CLI
 - Convex account
 - Clerk account
 
 ### Installation
+
 1. Clone the repository
+
 ```bash
 git clone https://github.com/owocoded/framez.git
 cd framez
 ```
 
 2. Install dependencies
+
 ```bash
 npm install
 ```
 
 3. Set up environment variables:
-Create a `.env` file in the root directory and add the following:
+   Create a `.env` file in the root directory and add the following:
+
 ```env
 EXPO_PUBLIC_CONVEX_URL=your_convex_url
 EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
@@ -66,6 +71,7 @@ CLERK_WEBHOOK_SECRET=your_clerk_webhook_secret
 ```
 
 4. Configure Convex:
+
 ```bash
 npm install -g convex
 convex init
@@ -73,21 +79,25 @@ convex deploy
 ```
 
 5. Configure Clerk:
+
 - Create an account at https://clerk.dev
 - Create a new application
 - Get your publishable key and webhook secret
 
 6. Run the app:
+
 ```bash
 npx expo start
 ```
 
 ### For Android
+
 ```bash
 npx expo start --android
 ```
 
 ### For iOS
+
 ```bash
 npx expo start --ios
 ```
@@ -125,9 +135,11 @@ README.md
 ## 📁 Convex Backend Implementation
 
 ### Database Schema
+
 - Tables: users, posts, files
 
 ### Functions
+
 - `/convex/posts.ts`
   - createPost(authorId, text, imageUrl)
   - getAllPosts() — returns all posts sorted by newest
@@ -149,6 +161,7 @@ README.md
 ## 🔄 Backend Choice: Convex
 
 Convex was chosen as the backend for Me2U because:
+
 - It provides a real-time database with automatic synchronization
 - Offers a simple, intuitive API without complex server setup
 - Supports file storage for image uploads
@@ -167,9 +180,49 @@ Convex was chosen as the backend for Me2U because:
 - Post sharing
 - Dark mode support
 
-## 📞 Support
+  # Project state flow
 
-For support, email support@me2u.com or open an issue in the repository.
+         ┌───────────────────┐
+        │   AuthContext     │
+        │------------------│
+        │ isAuthenticated  │
+        │ user              │
+        │ signIn(), signOut()│
+        └─────────┬─────────┘
+                  │
+                  ▼
+
+  ┌────────────────────────────┐
+  │ Screens / Components │
+  │----------------------------│
+  │ SignInScreen │
+  │ SignUpScreen │
+  │ ProfileScreen │
+  │ FeedScreen │
+  │ CreatePostScreen │
+  └─────────┬─────────┬────────┘
+  │ │
+  ▼ ▼
+  ┌───────────────┐ ┌───────────────┐
+  │ Local State │ │ Global State │
+  │ (useState) │ │ (Context / │
+  │ email, pwd, │ │ Zustand / │
+  │ loading, etc) │ │ Redux) │
+  └───────────────┘ └───────────────┘
+  │ │
+  ▼ ▼
+  ┌───────────────────────────────────┐
+  │ Convex Backend │
+  │-----------------------------------│
+  │ users table (authentication) │
+  │ posts table (feed & user posts) │
+  │ Functions / Queries │
+  │ - signup() │
+  │ - signin() │
+  │ - createPost() │
+  │ - getUserPosts() │
+  │ - getFeedPosts() │
+  └───────────────────────────────────┘
 
 ## 📝 License
 

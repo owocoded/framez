@@ -30,13 +30,15 @@ const SignInScreen: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSignIn = async () => {
     if (!email || !password) {
-      Alert.alert("Error", "Please fill in all fields");
+      setError("Please fill in all fields");
       return;
     }
 
+    setError(""); // Clear any previous errors
     setIsLoading(true);
     try {
       const success = await signIn(email, password);
@@ -44,11 +46,11 @@ const SignInScreen: React.FC<Props> = ({ navigation }) => {
         // Navigation to main app will be handled by RootNavigator based on auth state
         console.log("Sign in successful");
       } else {
-        Alert.alert("Error", "Invalid email or password");
+        setError("Invalid email or password");
       }
     } catch (error: any) {
       console.error("Sign in error:", error);
-      Alert.alert("Error", error.message || "Sign in failed");
+      setError(error.message || "Sign in failed");
     } finally {
       setIsLoading(false);
     }
@@ -56,7 +58,8 @@ const SignInScreen: React.FC<Props> = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Sign In</Text>
+      <Text style={styles.appTitle}>Framez</Text>
+      <Text style={styles.title}>Log In</Text>
 
       <TextInput
         style={styles.input}
@@ -75,6 +78,9 @@ const SignInScreen: React.FC<Props> = ({ navigation }) => {
         secureTextEntry
       />
 
+      {/* Error message display */}
+      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
       <TouchableOpacity
         style={styles.button}
         onPress={handleSignIn}
@@ -83,7 +89,7 @@ const SignInScreen: React.FC<Props> = ({ navigation }) => {
         {isLoading ? (
           <ActivityIndicator color="#fff" />
         ) : (
-          <Text style={styles.buttonText}>Sign In</Text>
+          <Text style={styles.buttonText}>Log In</Text>
         )}
       </TouchableOpacity>
 
@@ -102,22 +108,39 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     padding: 20,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#121212", // Dark background
+  },
+  appTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#fff",
+    position: "absolute",
+    top: 50, // Position at top
+    left: 20, // Position at left
+    zIndex: 1, // Ensure it's above other elements
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",
     marginBottom: 30,
+    color: "#fff", // Make sure the title is visible against dark background
   },
   input: {
     height: 50,
-    borderColor: "#ddd",
+    borderColor: "#555",
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 15,
-    backgroundColor: "#fff",
+    backgroundColor: "#333", // Darker input background
+    color: "#fff", // White text in inputs
+  },
+  errorText: {
+    color: "red",
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 15,
   },
   button: {
     backgroundColor: "#4A90E2",

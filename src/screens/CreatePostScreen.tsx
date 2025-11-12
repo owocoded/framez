@@ -1,14 +1,23 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Image, StyleSheet, Alert, ScrollView } from 'react-native';
-import { useMutation } from 'convex/react';
-import { api } from '../../convex/_generated/api.js';
-import { useConvex } from 'convex/react';
-import * as ImagePicker from 'expo-image-picker';
-import { useConvexAuthContext } from '../context/AuthContext';
-import Avatar from '../components/Avatar';
+import React, { useState } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  Image,
+  StyleSheet,
+  Alert,
+  ScrollView,
+} from "react-native";
+import { useMutation } from "convex/react";
+import { api } from "../../convex/_generated/api.js";
+import { useConvex } from "convex/react";
+import * as ImagePicker from "expo-image-picker";
+import { useConvexAuthContext } from "../context/AuthContext";
+import Avatar from "../components/Avatar";
 
 const CreatePostScreen = () => {
-  const [text, setText] = useState('');
+  const [text, setText] = useState("");
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const createPost = useMutation(api.posts.createPost);
@@ -17,10 +26,14 @@ const CreatePostScreen = () => {
 
   const pickImage = async () => {
     // Request permission to access media library
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const permissionResult =
+      await ImagePicker.requestMediaLibraryPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      Alert.alert('Permission required', 'Permission to access camera roll is required!');
+      Alert.alert(
+        "Permission required",
+        "Permission to access camera roll is required!"
+      );
       return;
     }
 
@@ -41,7 +54,10 @@ const CreatePostScreen = () => {
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
 
     if (permissionResult.granted === false) {
-      Alert.alert('Permission required', 'Permission to access camera is required!');
+      Alert.alert(
+        "Permission required",
+        "Permission to access camera is required!"
+      );
       return;
     }
 
@@ -58,54 +74,61 @@ const CreatePostScreen = () => {
 
   const uploadImageAndGetUrl = async (imageUri: string) => {
     try {
+      console.log("Uploading image with URI:", imageUri);
+      
       // Get the file extension to determine content type
       const getFileType = (uri: string) => {
-        const extension = uri.split('.').pop()?.toLowerCase();
-        if (extension === 'png') return 'image/png';
-        if (extension === 'gif') return 'image/gif';
-        if (extension === 'jpg' || extension === 'jpeg') return 'image/jpeg';
-        return 'image/jpeg'; // default
+        const extension = uri.split(".").pop()?.toLowerCase();
+        if (extension === "png") return "image/png";
+        if (extension === "gif") return "image/gif";
+        if (extension === "jpg" || extension === "jpeg") return "image/jpeg";
+        return "image/jpeg"; // default
       };
 
       // Generate upload URL from Convex
       const uploadUrl = await convex.mutation(api.upload.generateUploadUrl);
+      console.log("Generated upload URL:", uploadUrl);
 
       // Upload the image to Convex storage
       const imageResponse = await fetch(imageUri);
+      console.log("Fetched image response:", imageResponse.status);
       const imageBlob = await imageResponse.blob();
+      console.log("Created image blob");
 
       const response = await fetch(uploadUrl, {
-        method: 'POST',
+        method: "POST",
         body: imageBlob,
         headers: {
-          'Content-Type': getFileType(imageUri),
+          "Content-Type": getFileType(imageUri),
         },
       });
 
       if (!response.ok) {
-        throw new Error(`Upload failed: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Upload failed: ${response.status} ${response.statusText}`
+        );
       }
 
       const result = await response.json();
       const storageId = result.storageId;
+      console.log("Received storage ID:", storageId);
 
-      // Return the correct URL for the uploaded image
-      // In Convex, you can access the image using the storageId
-      return `${convex.httpEndpoint}/storage/${storageId}`;
+      console.log("Storage ID to be stored:", storageId);
+      return storageId;
     } catch (error) {
-      console.error('Error uploading image:', error);
+      console.error("Error uploading image:", error);
       throw error;
     }
   };
 
   const handleCreatePost = async () => {
     if (!text.trim()) {
-      Alert.alert('Error', 'Please enter some text for your post');
+      Alert.alert("Error", "Please enter some text for your post");
       return;
     }
 
     if (!convexUser || !convexUser._id) {
-      Alert.alert('Error', 'User not found');
+      Alert.alert("Error", "User not found");
       return;
     }
 
@@ -113,7 +136,9 @@ const CreatePostScreen = () => {
     try {
       let imageUrl = undefined;
       if (imageUri) {
+        console.log("Starting image upload...");
         imageUrl = await uploadImageAndGetUrl(imageUri);
+        console.log("Image upload complete, storage ID:", imageUrl);
       }
 
       await createPost({
@@ -123,24 +148,28 @@ const CreatePostScreen = () => {
       });
 
       // Reset form
-      setText('');
+      setText("");
       setImageUri(null);
 
-      Alert.alert('Success', 'Post created successfully!');
+      Alert.alert("Success", "Post created successfully!");
+      console.log("Post created successfully");
     } catch (error) {
-      console.error('Error creating post:', error);
-      Alert.alert('Error', 'Failed to create post');
+      console.error("Error creating post:", error);
+      Alert.alert("Error", `Failed to create post: ${error instanceof Error ? error.message : 'Unknown error'}`);
     } finally {
       setUploading(false);
     }
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 20 }}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{ paddingBottom: 20 }}
+    >
       <View style={styles.header}>
         <Avatar
           uri={convexUser?.avatar}
-          name={convexUser?.name || convexUser?.email || ''}
+          name={convexUser?.name || convexUser?.email || ""}
           size={40}
         />
         <Text style={styles.headerText}>
@@ -159,7 +188,7 @@ const CreatePostScreen = () => {
       />
 
       {imageUri && (
-        <Image source={{ uri: imageUri }} style={styles.imagePreview} />
+        <Image source={{ uri: imageUri }} style={styles.imagePreview} resizeMode="cover" />
       )}
 
       <View style={styles.buttonContainer}>
@@ -178,7 +207,7 @@ const CreatePostScreen = () => {
         disabled={uploading}
       >
         <Text style={styles.submitButtonText}>
-          {uploading ? 'Posting...' : 'Share'}
+          {uploading ? "Posting..." : "Post"}
         </Text>
       </TouchableOpacity>
     </ScrollView>
@@ -188,21 +217,21 @@ const CreatePostScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f2f5',
+    backgroundColor: "#f0f2f5",
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     padding: 16,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   headerText: {
     marginLeft: 12,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 16,
   },
   textInput: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     marginHorizontal: 16,
     marginVertical: 8,
     paddingHorizontal: 16,
@@ -211,48 +240,47 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     height: 150,
   },
   imagePreview: {
-    width: '100%',
+    width: "100%",
     height: 300,
     marginHorizontal: 16,
     marginVertical: 8,
     borderRadius: 8,
-    resizeMode: 'cover',
   },
   buttonContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     paddingHorizontal: 16,
     marginVertical: 16,
   },
   mediaButton: {
     flex: 0.48,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 12,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
   },
   mediaButtonText: {
     fontSize: 16,
   },
   submitButton: {
-    backgroundColor: '#4A90E2',
+    backgroundColor: "#4A90E2",
     marginHorizontal: 16,
     padding: 16,
     borderRadius: 8,
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 10,
   },
   submitButtonDisabled: {
-    backgroundColor: '#ccc',
+    backgroundColor: "#ccc",
   },
   submitButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
     fontSize: 16,
   },
 });
