@@ -8,8 +8,8 @@
       "developmentClient": true,
       "distribution": "internal",
       "env": {
-        "EXPO_PUBLIC_CONVEX_URL": "https://quiet-curlew-345.convex.cloud",
-        "CONVEX_DEPLOYMENT": "dev:quiet-curlew-345",
+        "EXPO_PUBLIC_CONVEX_URL": "https://focused-heron-145.convex.cloud",
+        "CONVEX_DEPLOYMENT": "dev:focused-heron-145",
         "EXPO_PUBLIC_CONVEX_PROJECT": "framez-dccdd",
         "EXPO_PUBLIC_CONVEX_TEAM": "yusuf-babatunde"
       }
@@ -20,8 +20,8 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_CONVEX_URL": "https://quiet-curlew-345.convex.cloud",
-        "CONVEX_DEPLOYMENT": "dev:quiet-curlew-345",
+        "EXPO_PUBLIC_CONVEX_URL": "https://focused-heron-145.convex.cloud",
+        "CONVEX_DEPLOYMENT": "dev:focused-heron-145",
         "EXPO_PUBLIC_CONVEX_PROJECT": "framez-dccdd",
         "EXPO_PUBLIC_CONVEX_TEAM": "yusuf-babatunde"
       }
@@ -32,8 +32,8 @@
         "buildType": "apk"
       },
       "env": {
-        "EXPO_PUBLIC_CONVEX_URL": "https://quiet-curlew-345.convex.cloud",
-        "CONVEX_DEPLOYMENT": "dev:quiet-curlew-345",
+        "EXPO_PUBLIC_CONVEX_URL": "https://focused-heron-145.convex.cloud",
+        "CONVEX_DEPLOYMENT": "dev:focused-heron-145",
         "EXPO_PUBLIC_CONVEX_PROJECT": "framez-dccdd",
         "EXPO_PUBLIC_CONVEX_TEAM": "yusuf-babatunde"
       }
