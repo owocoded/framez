@@ -6,13 +6,37 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_CONVEX_URL": "https://quiet-curlew-345.convex.cloud",
+        "CONVEX_DEPLOYMENT": "dev:quiet-curlew-345",
+        "EXPO_PUBLIC_CONVEX_PROJECT": "framez-dccdd",
+        "EXPO_PUBLIC_CONVEX_TEAM": "yusuf-babatunde"
+      }
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_CONVEX_URL": "https://quiet-curlew-345.convex.cloud",
+        "CONVEX_DEPLOYMENT": "dev:quiet-curlew-345",
+        "EXPO_PUBLIC_CONVEX_PROJECT": "framez-dccdd",
+        "EXPO_PUBLIC_CONVEX_TEAM": "yusuf-babatunde"
+      }
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_CONVEX_URL": "https://quiet-curlew-345.convex.cloud",
+        "CONVEX_DEPLOYMENT": "dev:quiet-curlew-345",
+        "EXPO_PUBLIC_CONVEX_PROJECT": "framez-dccdd",
+        "EXPO_PUBLIC_CONVEX_TEAM": "yusuf-babatunde"
+      }
     }
   },
   "submit": {

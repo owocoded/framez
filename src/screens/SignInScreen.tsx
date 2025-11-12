@@ -41,7 +41,8 @@ const SignInScreen: React.FC<Props> = ({ navigation }) => {
     try {
       const success = await signIn(email, password);
       if (success) {
-        // Navigate to main app after successful sign in
+        // Navigation to main app will be handled by RootNavigator based on auth state
+        console.log("Sign in successful");
       } else {
         Alert.alert("Error", "Invalid email or password");
       }

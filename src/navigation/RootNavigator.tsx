@@ -13,7 +13,7 @@ const Stack = createStackNavigator();
 const RootNavigator = () => {
   const { isAuthenticated, isLoading } = useConvexAuthContext();
 
-  // 🔄 Show loading spinner while checking auth state
+  // Show loading spinner while checking auth state
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -26,10 +26,10 @@ const RootNavigator = () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {isAuthenticated ? (
-          // ✅ Signed-in users go to the main app
+          // Signed-in users go to the main app
           <Stack.Screen name="MainApp" component={AppNavigator} />
         ) : (
-          // 🚪 Not signed in → show SignIn and SignUp
+          // Not signed in → show SignIn and SignUp
           <>
             <Stack.Screen name="SignIn" component={SignInScreen} />
             <Stack.Screen name="SignUp" component={SignUpScreen} />

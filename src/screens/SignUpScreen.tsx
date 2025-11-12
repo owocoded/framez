@@ -42,9 +42,8 @@ const SignUpScreen: React.FC<Props> = ({ navigation }) => {
     try {
       const success = await signUp(name, email, password);
       if (success) {
-        // Navigate to main app after successful sign up
-        // Since this is used within the navigation context, the auth flow will be handled by the parent
-        // The parent AuthNavigator will navigate to the appropriate app screen
+        // Navigation to main app will be handled by RootNavigator based on auth state
+        console.log("Sign up successful");
       } else {
         Alert.alert('Error', 'Failed to create account');
       }

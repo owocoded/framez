@@ -32,6 +32,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userId, setUserId] = useState<Id<"users"> | null>(null);
   const [user, setUser] = useState<any | null>(null);
+  const [, forceUpdate] = useState({}); // Dummy state to force updates
 
   const registerUser = useMutation(api.auth.register);
   const loginUser = useMutation(api.auth.login);
@@ -113,10 +114,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       } else {
         // No stored credentials, so we're done loading
         setIsLoading(false);
+        // Explicitly set auth state to false when no credentials found
+        setIsAuthenticated(false);
+        setUserId(null);
+        setUser(null);
       }
     } catch (error) {
       console.error("Error loading auth state:", error);
       setIsLoading(false);
+      // Ensure we're in a non-authenticated state if there's an error
+      setIsAuthenticated(false);
+      setUserId(null);
+      setUser(null);
     }
   };
 
@@ -191,22 +200,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   );
 
   // Sign out
-  const signOut = useCallback(async () => {
-    try {
-      try {
-        await deleteStorageItem("authToken");
-        await deleteStorageItem("userId");
-      } catch (storageError) {
-        console.error("Storage error during sign out:", storageError);
-        // Continue with auth state reset even if storage removal fails
-      }
-      setIsAuthenticated(false);
-      setUserId(null);
-      setUser(null);
-    } catch (error) {
-      console.error("Sign out error:", error);
-    }
-  }, []);
+const signOut = useCallback(async () => {
+  console.log("Starting sign out process");
+  setIsLoading(true);
+
+  try {
+    // Remove stored tokens / user info
+    await deleteStorageItem("authToken");
+    await deleteStorageItem("userId");
+    console.log("Storage items deleted");
+
+    // Reset auth state
+    setUser(null);
+    setUserId(null);
+    setIsAuthenticated(false); // ✅ triggers RootNavigator to switch to SignIn
+
+    console.log("State updated, isAuthenticated:", false);
+  } catch (error) {
+    console.error("Sign out error:", error);
+  } finally {
+    setIsLoading(false);
+  }
+
+  console.log("Sign out process completed");
+}, []);
+
 
   const value: AuthContextType = {
     isLoading,

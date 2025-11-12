@@ -18,7 +18,7 @@ const CreatePostScreen = () => {
   const pickImage = async () => {
     // Request permission to access media library
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    
+
     if (permissionResult.granted === false) {
       Alert.alert('Permission required', 'Permission to access camera roll is required!');
       return;
@@ -39,7 +39,7 @@ const CreatePostScreen = () => {
   const takePhoto = async () => {
     // Request permission to access camera
     const permissionResult = await ImagePicker.requestCameraPermissionsAsync();
-    
+
     if (permissionResult.granted === false) {
       Alert.alert('Permission required', 'Permission to access camera is required!');
       return;
@@ -58,26 +58,40 @@ const CreatePostScreen = () => {
 
   const uploadImageAndGetUrl = async (imageUri: string) => {
     try {
+      // Get the file extension to determine content type
+      const getFileType = (uri: string) => {
+        const extension = uri.split('.').pop()?.toLowerCase();
+        if (extension === 'png') return 'image/png';
+        if (extension === 'gif') return 'image/gif';
+        if (extension === 'jpg' || extension === 'jpeg') return 'image/jpeg';
+        return 'image/jpeg'; // default
+      };
+
       // Generate upload URL from Convex
       const uploadUrl = await convex.mutation(api.upload.generateUploadUrl);
-      
+
       // Upload the image to Convex storage
       const imageResponse = await fetch(imageUri);
       const imageBlob = await imageResponse.blob();
-      
+
       const response = await fetch(uploadUrl, {
         method: 'POST',
         body: imageBlob,
         headers: {
-          'Content-Type': 'image/jpeg',
+          'Content-Type': getFileType(imageUri),
         },
       });
-      
+
+      if (!response.ok) {
+        throw new Error(`Upload failed: ${response.status} ${response.statusText}`);
+      }
+
       const result = await response.json();
       const storageId = result.storageId;
-      
-      // Return the public URL for the uploaded image
-      return `https://api.convex.cloud/api/storage/${storageId}`;
+
+      // Return the correct URL for the uploaded image
+      // In Convex, you can access the image using the storageId
+      return `${convex.httpEndpoint}/storage/${storageId}`;
     } catch (error) {
       console.error('Error uploading image:', error);
       throw error;
@@ -89,12 +103,12 @@ const CreatePostScreen = () => {
       Alert.alert('Error', 'Please enter some text for your post');
       return;
     }
-    
+
     if (!convexUser || !convexUser._id) {
       Alert.alert('Error', 'User not found');
       return;
     }
-    
+
     setUploading(true);
     try {
       let imageUrl = undefined;
@@ -111,7 +125,7 @@ const CreatePostScreen = () => {
       // Reset form
       setText('');
       setImageUri(null);
-      
+
       Alert.alert('Success', 'Post created successfully!');
     } catch (error) {
       console.error('Error creating post:', error);
@@ -124,16 +138,16 @@ const CreatePostScreen = () => {
   return (
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: 20 }}>
       <View style={styles.header}>
-        <Avatar 
-          uri={convexUser?.avatar} 
-          name={convexUser?.name || convexUser?.email || ''} 
-          size={40} 
+        <Avatar
+          uri={convexUser?.avatar}
+          name={convexUser?.name || convexUser?.email || ''}
+          size={40}
         />
         <Text style={styles.headerText}>
           {convexUser?.name || convexUser?.email}
         </Text>
       </View>
-      
+
       <TextInput
         style={styles.textInput}
         placeholder="What's on your mind?"
@@ -143,23 +157,23 @@ const CreatePostScreen = () => {
         textAlignVertical="top"
         numberOfLines={6}
       />
-      
+
       {imageUri && (
         <Image source={{ uri: imageUri }} style={styles.imagePreview} />
       )}
-      
+
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.mediaButton} onPress={pickImage}>
           <Text style={styles.mediaButtonText}>📷 Photo</Text>
         </TouchableOpacity>
-        
+
         <TouchableOpacity style={styles.mediaButton} onPress={takePhoto}>
           <Text style={styles.mediaButtonText}>📸 Camera</Text>
         </TouchableOpacity>
       </View>
-      
-      <TouchableOpacity 
-        style={[styles.submitButton, uploading && styles.submitButtonDisabled]} 
+
+      <TouchableOpacity
+        style={[styles.submitButton, uploading && styles.submitButtonDisabled]}
         onPress={handleCreatePost}
         disabled={uploading}
       >

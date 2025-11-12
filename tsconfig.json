@@ -21,12 +21,8 @@
   "extends": "expo/tsconfig.base",
   "include": [
     "**/*.ts",
-<<<<<<< HEAD
-    "**/*.tsx"
-=======
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
->>>>>>> 93202a22dbda1a1278e2d3afcf953733899df163
   ]
 }
